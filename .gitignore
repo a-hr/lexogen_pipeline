@@ -1,0 +1,3 @@
+.nextflow/
+inputs/*.gz
+containers/*

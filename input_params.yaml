@@ -1,0 +1,20 @@
+# Use this tamplate to pass your parameters to Nextflow.
+
+# TIP: use $baseDir to refer to the directory where main.nf is located
+# You can also use full paths instead  
+
+# ---- required settings ----
+input: "${baseDir}/inputs" # folder containing the fastq files, the barcode .csv and the .saf table 
+output: "${baseDir}/output" # folder to contain the outputs, created if not found
+index: "/scratch/blazquL/alvaro/index_100" # path where index is located OR where to create it
+suffix: "_R"
+extension: ".fastq.gz"
+
+# ---- optional arguments ----
+create_index: False
+ref_gen: "$baseDir/ref_gen" # required only if create_index = true
+map_size: 100
+
+# ---- notification (TODO) ----
+maildir: ""
+mailpass: ""

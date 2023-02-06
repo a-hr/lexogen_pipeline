@@ -1,3 +1,8 @@
 .nextflow/
 inputs/*.gz
+output/
 containers/*
+work/
+*.log
+*.out
+*.txt

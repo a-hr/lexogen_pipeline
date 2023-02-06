@@ -30,15 +30,16 @@ process multiqc {
 }
 
 process demultiplex {
-    // todo: pass fromfilepairs.collect() as argument and replace -p inpuuts with "."
+    // todo: pass fromfilepairs.collect() as argument and replace -p inputs with "."
+    publishDir "$params.output", pattern: "demultiplex_qc.txt", mode: "copy"
     label 'process_high'
     output:
         path "*.gz"
 
     """
     demultiplex.py -i $params.input -p $params.input -s ${params.suffix}1 ${params.suffix}2
-    touch $params.output/demultiplex_qc.txt
-    seqkit stat *R1.fastq.gz > $params.output/demultiplex_qc.txt
+    touch demultiplex_qc.txt
+    seqkit stat *R1.fastq.gz > demultiplex_qc.txt
     rm -f *R2.fastq.gz *unknown_R1.fastq.gz
     """
 }

@@ -30,8 +30,8 @@ def parse() -> tuple:
         default=["_R1", "_R2"],
     )
 
-    args = parser.parse_args()
-    return (args.input, args.path, args.suffixes)
+    _args = parser.parse_args()
+    return _args.input, _args.path, _args.suffixes
 
 
 def demultiplex(_input: Path, fastq: Path, _suffixes: tuple = ("_R1", "_R2")) -> None:
@@ -49,16 +49,18 @@ def demultiplex(_input: Path, fastq: Path, _suffixes: tuple = ("_R1", "_R2")) ->
         sep=";",
     ).dropna(axis=0, inplace=False)
 
-    bcs = [
+    bcs: list = [
         f"{(row[1]['sub_exp']).strip()}=^{(row[1]['barcode']).strip()}"
         for row in tp_table[["sub_exp", "barcode"]].iterrows()
     ]
-    bcs = " -g ".join(
-        bcs
-    )  # string containing all the barcodes and their id, concatenated with -g
+    bcs: str = " -g ".join(bcs)  # contains the barcodes and their id, concatenated with -g
 
     fq1 = [str(fq) for fq in Path(fastq).iterdir() if _suffixes[0] in str(fq)]
     fq2 = [str(fq) for fq in Path(fastq).iterdir() if _suffixes[1] in str(fq)]
+
+    # sort both lists so that files are paired (R1/R2)
+    fq1.sort()
+    fq2.sort()
 
     if not (fq1 and fq2):
         print("No .fastq files provided or wrong suffixes, check the path")
@@ -68,7 +70,8 @@ def demultiplex(_input: Path, fastq: Path, _suffixes: tuple = ("_R1", "_R2")) ->
 
     for i, data in enumerate(exp_files_list.items()):
         exp, r = data
-        cmd = f"cutadapt -e 0.2 --no-indels --cores 0 -g {bcs} -p {exp}_{{name}}_R1.fastq.gz -o {exp}_{{name}}_R2.fastq.gz {r[1]} {r[0]}> demultiplex.{i}.log"
+        cmd = f"cutadapt -e 0.2 --no-indels --cores 0 -g {bcs} -p {exp}_{{name}}_R1.fastq.gz -o {exp}_{{name}}_R2" \
+              f".fastq.gz {r[1]} {r[0]}> demultiplex.{i}.log"
         os.system(cmd)
 
 
@@ -94,4 +97,4 @@ def _get_exps(fp_table, _fq1, _fq2) -> dict:
 
 if __name__ == "__main__":
     args = parse()
-    demultiplex(*args) # type: ignore
+    demultiplex(*args)  # type: ignore

@@ -3,7 +3,7 @@ inputs/*.gz
 output/
 containers/*
 work/
-*.log
+.nextflow.log*
 *.out
 *.txt
 test.nf

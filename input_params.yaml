@@ -12,7 +12,7 @@ suffix: "_R"
 extension: ".fastq.gz"
 
 # ---- optional arguments ----
-create_index: False
+create_index: false
 ref_gen: "$baseDir/ref_gen" # required only if create_index = true
 map_size: 100
 

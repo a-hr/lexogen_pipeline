@@ -79,7 +79,7 @@ def _STAR_align(**kwargs) -> str:
 
     if (d:=kwargs.get("out")) != "":
         out_file = str(Path(d) / out_file) # type: ignore
- 
+    #     --genomeLoad LoadAndRemove \
     return f"""STAR --runThreadN 8 \
     --genomeDir {gDir} \
     --readFilesIn {file} \
@@ -87,7 +87,6 @@ def _STAR_align(**kwargs) -> str:
     --outFileNamePrefix {out_file} \
     --outSAMtype BAM SortedByCoordinate \
     --outReadsUnmapped Fastx \
-    --genomeLoad LoadAndRemove \
     --limitBAMsortRAM 10000000000 \
     --outFilterMultimapNmax 10 \
     --outFilterMismatchNoverLmax 0.04 \

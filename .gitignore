@@ -7,3 +7,4 @@ work/
 *.out
 *.txt
 test.nf
+error_logs/

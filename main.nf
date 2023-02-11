@@ -3,6 +3,8 @@ nextflow.enable.dsl=2
 
 process fastqc {
     label 'process_low'
+    tag "$sample_id"
+
     input:
         tuple val(sample_id), path(fastqs)
     output:
@@ -18,19 +20,20 @@ process multiqc {
     publishDir "${params.output}", mode: 'copy'
 
     input:
-        path report_infiles
-        val outname
+        path fastqc_logs
+        path alignment_logs
 
     output:
         path "*.html"
     
     """
-    multiqc . -n $outname
+    multiqc . -n Lexogen_pipeline_multiqc_report.html
     """
 }
 
 process demultiplex {
     label 'process_high'
+    tag "$sample_id"
 
     input:
         tuple val(sample_id), path(fastqs)
@@ -44,8 +47,8 @@ process demultiplex {
 }
 
 process seqkit_demultiplex {
-    publishDir "$params.output", pattern: "*.txt", mode: "copy"
     label 'process_high'
+    publishDir "$params.output", pattern: "*.txt", mode: "copy"
 
     input:
         path dmplx_fastqs
@@ -86,6 +89,7 @@ process STAR_INDEX {
 
 process extract_UMI {
     label 'process_medium'
+    tag "$fastq"
     maxForks 25
 
     input:
@@ -100,6 +104,7 @@ process extract_UMI {
 
 process STAR_ALIGN {
     label 'process_max'
+    tag "$fastq"
     maxForks 25
 
     input:
@@ -108,15 +113,30 @@ process STAR_ALIGN {
         val index_created
     output:
         path "*.bam", emit: bams
-        path "*[!.bam][!.gz]", emit: logs
+        path "*Log.final.out", emit: logs
 
     """
-    star_utils.py -t align -I $genome_index -f $fastq
+    # star_utils.py -t align -I $genome_index -f $fastq
+    STAR \\
+        --runThreadN $task.cpus \\
+        --genomeDir $genome_index \\
+        --readFilesIn $fastq \\
+        --readFilesCommand zcat \\
+        --outSAMtype BAM SortedByCoordinate \\
+        --outReadsUnmapped Fastx \\
+        --limitBAMsortRAM 10000000000 \\
+        --outFilterMultimapNmax 10 \\
+        --outFilterMismatchNoverLmax 0.04 \\
+        --outFilterScoreMinOverLread 0.33 \\
+        --outFilterMatchNminOverLread 0.33 \\
+        --alignEndsType Local \\
+        --outSAMattributes Standard 
     """
 }
 
 process dedup {
     label 'process_low'
+    tag "$bam"
     publishDir "${params.output}/bams", mode: 'copy'
     maxForks 25
 
@@ -133,6 +153,7 @@ process dedup {
 
 process BAM_INDEX {
     label 'process_low'
+    tag "$bam"
     publishDir "${params.output}/bams", mode: 'move'
     maxForks 25
 
@@ -185,6 +206,7 @@ workflow {
             * removed the shared memory strategy on STAR genome, little effect
         - ask the user whether to save the created index or not and modify its publishDir 
         - add dry-run for dependency download 
+        - add demultiplex log files to multiqc report
     */
 
     // star index creation
@@ -192,7 +214,7 @@ workflow {
 
     // raw file qc
     fastqc(paired_fastq_files)
-    multiqc_inputs = fastqc.out.collect()  // holds data to feed multiqc
+    fastqc_multiqc_inputs = fastqc.out.collect()
     
     // raw fastq demultiplexing
     demultiplex(paired_fastq_files, csv_dir) | collect \
@@ -207,11 +229,13 @@ workflow {
     index_path    = params.create_index ? STAR_INDEX.out.index_path : params.index_dir
 
     STAR_ALIGN(extract_UMI.out, index_path, align_trigger)
+    alignment_multiqc_inputs = STAR_ALIGN.out.logs.collect()
 
     // qc report
-    multiqc_inputs.concat(STAR_ALIGN.out.logs.collect())
-
-    multiqc(multiqc_inputs, "qc_report")
+    multiqc(
+        fastqc_multiqc_inputs,
+        alignment_multiqc_inputs
+    )
 
     // deduplication of aligned bams
     dedup(STAR_ALIGN.out.bams)

@@ -70,8 +70,7 @@ def demultiplex(_input: Path, fastq: Path, _suffixes: tuple = ("_R1", "_R2")) ->
 
     for i, data in enumerate(exp_files_list.items()):
         exp, r = data
-        cmd = f"cutadapt -e 0.2 --no-indels --cores 0 -g {bcs} -p {exp}_{{name}}_R1.fastq.gz -o {exp}_{{name}}_R2" \
-              f".fastq.gz {r[1]} {r[0]}> demultiplex.{i}.log"
+        cmd = f"cutadapt -e 0.2 --no-indels --cores 0 -g {bcs} -p {exp}_{{name}}_R1.fastq.gz -o {exp}_{{name}}_R2.fastq.gz {r[1]} {r[0]}"
         os.system(cmd)
 
 

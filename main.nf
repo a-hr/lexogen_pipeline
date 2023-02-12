@@ -34,7 +34,6 @@ process pullContainers {
     }
 }
 
-
 process fastqc {
     label 'process_low'
     tag "$sample_id"
@@ -80,7 +79,7 @@ process demultiplex {
         path ".command.log", emit: logs
 
     """
-    demultiplex.py -i $csv_dir -p . -s ${params.suffix}1 ${params.suffix}2
+    demultiplex.py -i $csv_dir -p . -s ${params.suffix}1 ${params.suffix}2 > demultiplex${sample_id}.log
     rm -f *R2.fastq.gz *unknown_R1.fastq.gz
     """
 }

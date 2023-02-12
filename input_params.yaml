@@ -7,7 +7,7 @@
 csv_dir: "${baseDir}/inputs" # folder containing the barcode .csv's and the .saf table 
 fastq_dir: "${baseDir}/inputs" # folder containing the fastq files
 output_dir: "${baseDir}/output" # folder to contain the outputs, created if not found
-index_dir: "/scratch/blazquL/alvaro/index_100" # path where index is located OR where to create it
+index_dir: "/scratch/blazquL/indexes/h_index/index_h99" # path where index is located OR where to create it
 suffix: "_R"
 extension: ".fastq.gz"
 

@@ -76,7 +76,7 @@ process demultiplex {
         each csv_dir
     output:
         path "*.gz", emit: fastqs
-        path ".command.log", emit: logs
+        path "demultiplex${sample_id}.log", emit: logs
 
     """
     demultiplex.py -i $csv_dir -p . -s ${params.suffix}1 ${params.suffix}2 > demultiplex${sample_id}.log
@@ -198,7 +198,8 @@ process BAM_INDEX {
 
 process featureCounts {
     label 'process_low'
-    publishDir "${params.output_dir}", mode: 'move'
+    publishDir "${params.output_dir}", mode: 'copy', pattern: "*.txt"
+
     input:
         path bams
         path csv_dir

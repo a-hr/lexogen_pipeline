@@ -9,3 +9,4 @@ clean:
 	rm -f slurm*.out
 	rm -f trace*.txt
 	rm -f .nextflow.log*
+	clear

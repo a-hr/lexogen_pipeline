@@ -92,7 +92,7 @@ process STAR_INDEX {
         path fa_file
         path annot_file
     output:
-        path "star_index/", emit: index_path
+        path "star_index/", emit: index_dir
         val true, emit: finished
     when:
         params.create_index == true
@@ -104,7 +104,7 @@ process STAR_INDEX {
         --runMode genomeGenerate \\
         --genomeDir star_index \\
         --genomeFastaFiles $fa_file \\
-        --sjdbGTFfile  $annot_file \\
+        --sjdbGTFfile $annot_file \\
         --sjdbOverhang $params.map_size
     """
 }
@@ -254,9 +254,9 @@ workflow {
 
     // read alignment
     align_trigger = params.create_index ? STAR_INDEX.out.finished : true
-    index_path    = params.create_index ? STAR_INDEX.out.index_path : params.index_dir
+    index_dir     = params.create_index ? STAR_INDEX.out.index_dir : params.index_dir
 
-    STAR_ALIGN(extract_UMI.out, index_path, align_trigger)
+    STAR_ALIGN(extract_UMI.out, index_dir, align_trigger)
     alignment_multiqc = STAR_ALIGN.out.logs.collect()
 
     // deduplication of aligned bams

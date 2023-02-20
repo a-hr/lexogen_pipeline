@@ -1,39 +1,6 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
-process pullContainers {
-    publishDir "${baseDir}/containers", mode: 'move'
-
-    output:
-        path "containers"
-    
-    exec:
-    // parse the config file and get the container names
-    def config = new File("nextflow.config")
-    def containers = []
-    config.eachLine { line ->
-        if (line.contains("container =")) {
-            containers.add(line.split("=")[1].trim())
-        }
-    }
-
-    // remove the duplicates
-    containers = containers.unique()
-
-    // create the containers directory
-    def containersDir = new File("${baseDir}containers")
-    containersDir.mkdirs()
-
-    // pull the containers
-    containers.each { container ->
-        def containerName = container.replace("/", "_")
-        def command = "singularity pull --name " + $containerName + ".img --dir " + $baseDir + "/containers docker://" + $container
-        println command
-        def process = command.execute()
-        process.waitFor()
-    }
-}
-
 process fastqc {
     label 'process_low'
     tag "$sample_id"
@@ -112,7 +79,6 @@ process STAR_INDEX {
 process extract_UMI {
     label 'process_medium'
     tag "$fastq"
-    maxForks 25
 
     input:
         path fastq
@@ -127,7 +93,6 @@ process extract_UMI {
 process STAR_ALIGN {
     label 'process_max'
     tag "$fastq"
-    maxForks 25
 
     input:
         path fastq
@@ -162,7 +127,6 @@ process dedup {
     label 'process_low'
     tag "$bam"
     publishDir "${params.output_dir}/bams", mode: 'copy', enabled: params.get_bams
-    maxForks 25
 
     input:
         path bam
@@ -182,7 +146,6 @@ process BAM_INDEX {
     label 'process_low'
     tag "$bam"
     publishDir "${params.output_dir}/bams", mode: 'move', enabled: params.get_bams
-    maxForks 25
 
     input:
         path bam
@@ -230,14 +193,6 @@ else {
 
 
 workflow {
-    /* BUS ERROR
-    - random bus error or input/output error on any process:
-            * as a patch, 'retry' allowed as a strategy (the error occurs randomly and doesnt usually repeat on the same process fork)
-            * limited the maxForks in case the error comes from RAM memory, little effect
-            * removed the shared memory strategy on STAR genome, little effect
-            * might be related to disk space, according to different sources
-    */
-
     // star index creation
     STAR_INDEX(index_fa, index_annot)
 

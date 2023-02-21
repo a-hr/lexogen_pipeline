@@ -1,10 +1,14 @@
+# nextflow cache and work directories
 .nextflow/
-inputs/*.gz
-output/
-containers/*
 work/
 .nextflow.log*
 *.out
 *.txt
-test.nf
-error_logs/
+
+# pipeline inputs and outputs
+inputs/*.gz
+output/
+
+# pipeline intermediate files
+ref_gen/*
+containers/*

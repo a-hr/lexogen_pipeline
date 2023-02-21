@@ -13,8 +13,9 @@ extension: ".fastq.gz"
 
 # ---- optional arguments ----
 get_bams: false
-create_index: false
-ref_gen: "$baseDir/ref_gen" # required only if create_index = true
+create_index: true
+save_index: true
+ref_gen: "${baseDir}/ref_gen" # required only if create_index = true
 map_size: 100
 
 # ---- notification (TODO) ----

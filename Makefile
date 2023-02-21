@@ -1,10 +1,9 @@
 clean:
-	rm -rf work/
-	rm -rf output/
-	rm -f slurm*.out
-	rm -f trace*.txt
-	rm -f .nextflow.log*
-	clear
+	@rm -rf work/
+	@rm -rf output/
+	@rm -f slurm*.out
+	@rm -f trace*.txt
+	@rm -f .nextflow.log*
 
 # singularity must be available in the working environment
 pull:

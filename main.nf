@@ -53,7 +53,7 @@ process demultiplex {
 
 process STAR_INDEX {
     label 'process_max'
-    publishDir "${params.index_dir}", mode: 'move'
+    publishDir "${params.index_dir}", mode: 'copy', enabled: params.save_index
 
     input:
         path fa_file
@@ -96,8 +96,8 @@ process STAR_ALIGN {
 
     input:
         path fastq
-        path genome_index
-        val index_created
+        each genome_index
+
     output:
         path "*.bam", emit: bams
         path "*Log.final.out", emit: logs
@@ -183,8 +183,8 @@ csv_dir            = channel.fromPath(params.csv_dir, type: 'dir', checkIfExists
 index_dir          = channel.fromPath(params.index_dir, type: 'dir', checkIfExists: true)
 
 if (params.create_index) {
-    index_fa    = fromPath("$params.ref_gen/*.fa", checkIfExists: true)
-    index_annot = fromPath("$params.ref_gen/*.gtf", checkIfExists: true) 
+    index_fa    = channel.fromPath("$params.ref_gen/*.fa", checkIfExists: true)
+    index_annot = channel.fromPath("$params.ref_gen/*.gtf", checkIfExists: true) 
 }
 else {
     index_fa    = channel.empty()
@@ -208,10 +208,9 @@ workflow {
     extract_UMI(demultiplex.out.fastqs.flatten())
 
     // read alignment
-    align_trigger = params.create_index ? STAR_INDEX.out.finished : true
-    index_dir     = params.create_index ? STAR_INDEX.out.index_dir : params.index_dir
+    index_dir = params.create_index ? STAR_INDEX.out.index_dir : params.index_dir
 
-    STAR_ALIGN(extract_UMI.out, index_dir, align_trigger)
+    STAR_ALIGN(extract_UMI.out, index_dir)
     alignment_multiqc = STAR_ALIGN.out.logs.collect()
 
     // deduplication of aligned bams

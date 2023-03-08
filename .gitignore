@@ -6,7 +6,8 @@ work/
 *.txt
 
 # pipeline inputs and outputs
-inputs/*.gz
+inputs/fastqs/
+inputs/csvs/
 output/
 
 # pipeline intermediate files

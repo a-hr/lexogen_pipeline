@@ -4,8 +4,9 @@ nextflow.enable.dsl=2
 include { stats } from './modules/seqkit.nf'
 include { demultiplex } from './modules/cutadapt.nf'
 include { fastqc } from './modules/fastqc.nf'
+include { multiqc } from './modules/multiqc.nf'
 include { STAR_INDEX; STAR_ALIGN } from './modules/STAR.nf'
-include { extract_UMI; dedup_UMI } from './modules/umi_tools.nf'
+include { extract_UMI; dedup_UMI } from './modules/UMI.nf'
 include { BAM_INDEX } from './modules/samtools.nf'
 include { featureCounts } from './modules/subread.nf'
 
@@ -52,7 +53,7 @@ workflow {
     demultiplex_multiqc = demultiplex.out.logs.collect()
     
     stats(
-        demultiplex.out.collect(),
+        demultiplex.out.fastqs.collect(),
         "bc_demultiplexed"
     )
 

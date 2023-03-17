@@ -10,7 +10,7 @@ process demultiplex {
         path "demultiplex${sample_id}.log", emit: logs
 
     """
-    demultiplex_PE.py -i $csv_dir -p . -s ${params.suffix}1 ${params.suffix}2 > demultiplex${sample_id}.log
+    demultiplex_PE.py -b $csv_dir -f . -s ${params.suffix}1 ${params.suffix}2 > demultiplex${sample_id}.log
     rm -f *R2.fastq.gz *unknown_R1.fastq.gz
     """
 }

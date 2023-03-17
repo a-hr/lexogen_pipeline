@@ -12,7 +12,7 @@ def parse() -> tuple:
     parser = argparse.ArgumentParser(
         description="Demultiplex .fastq files given the sample and experiment barcodes."
     )
-    parser.add_argument("-b", type=str, help="Barcode table (csv) path")
+    parser.add_argument("-b", type=str, help="Barcode table (csv) directory path")
     parser.add_argument("-f", type=str, help=".fastq files directory")
     parser.add_argument("-s", nargs=2, default=["_R1", "_R2"])
 
@@ -20,7 +20,7 @@ def parse() -> tuple:
     return _args.b, _args.f, _args.s
 
 def validate_inputs(bc: str, fs: str, s: list) -> tuple:
-    if not (bc_path := Path(bc)).exists():
+    if not (bc_path := next(Path(bc).glob("threeprime.csv"))).exists():
         sys.stderr.write("InputError: Barcode csv does not exist\n")
         quit()
 

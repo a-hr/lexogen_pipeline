@@ -4,6 +4,7 @@ clean:
 	@rm -f slurm*.out
 	@rm -f trace*.txt
 	@rm -f .nextflow.log*
+	@rm -f *.mmd
 
 # singularity must be available in the working environment
 pull:

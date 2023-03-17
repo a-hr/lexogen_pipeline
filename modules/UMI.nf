@@ -19,7 +19,7 @@ process dedup_UMI {
     publishDir "${params.output_dir}/bams",
         mode: 'copy',
         pattern: "dedup_$bam",
-        enabled: params.publish_mapped
+        enabled: params.get_bams
 
     input:
         path bam

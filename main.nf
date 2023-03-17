@@ -73,7 +73,11 @@ workflow {
     BAM_INDEX(dedup_UMI.out.dedup_bams)
 
     // expression quantification
-    featureCounts(dedup_UMI.out.dedup_bams.collect(), csv_dir) 
+    featureCounts(
+        dedup_UMI.out.dedup_bams.collect(),
+        STAR_ALIGN.out.bams.collect(),
+        csv_dir
+    ) 
     featureCounts_multiqc = featureCounts.out.logs.collect()
 
     // qc report

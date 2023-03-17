@@ -8,8 +8,9 @@ work/
 # pipeline inputs and outputs
 inputs/fastqs/
 inputs/csvs/
-output/
+*output/
 
 # pipeline intermediate files
 ref_gen/*
 containers/*
+*index/

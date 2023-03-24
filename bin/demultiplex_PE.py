@@ -50,7 +50,7 @@ def demultiplex(bc_csv: Path, f1: Path, f2: Path) -> None:
     ]
     bcs = " -g ".join(bcs)  # contains the barcodes and their id, concatenated with -g
 
-    cmd = f"""cutadapt -e 0.2 --no-indels -j 0 -g {bcs} -p {{name}}_R1.fastq.gz -o {{name}}_R2.fastq.gz {f2} {f1}"""
+    cmd = f"""cutadapt -e 0 --no-indels -j 0 -g {bcs} -p {{name}}_R1.fastq.gz -o {{name}}_R2.fastq.gz {f2} {f1}"""
     os.system(cmd)
 
 

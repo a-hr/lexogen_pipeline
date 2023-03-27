@@ -18,6 +18,18 @@ save_index: true
 ref_gen: "${baseDir}/ref_gen" # required only if create_index = true
 map_size: 100
 
+# ---- result plotting and grouping ----
+enable_grouping: true
+mouses: [WT, KI, YAC]
+tissues: [STR, CTX, HPC]
+
+enable_plotting: true
+libraries: []
+samples: [WT, KI, YAC]
+targets: [hHTT_PA1_v1, hHTT_PA2_v1, hHTT_cPA1_v1, hHTT_cPA2_v1, GRN]
+controls: [NTC, Neg]
+groups: 2
+
 # ---- notification (TODO) ----
 maildir: ""
 mailpass: ""

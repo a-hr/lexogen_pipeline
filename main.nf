@@ -9,6 +9,7 @@ include { STAR_INDEX; STAR_ALIGN } from './modules/STAR.nf'
 include { extract_UMI; dedup_UMI } from './modules/UMI.nf'
 include { BAM_INDEX } from './modules/samtools.nf'
 include { featureCounts } from './modules/subread.nf'
+include { group_results; plot_results } from './modules/visualization.nf'
 
 
 // VARIABLE DECLARATIONS
@@ -80,6 +81,13 @@ workflow {
         csv_dir
     ) 
     featureCounts_multiqc = featureCounts.out.logs.collect()
+
+    // result visualization
+    featureCounts.out.counts | collect \
+    group_results
+
+    featureCounts.out.counts | collect \
+    plot_results
 
     // qc report
     multiqc(

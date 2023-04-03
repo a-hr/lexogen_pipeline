@@ -1,15 +1,15 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
-include { stats } from './modules/seqkit.nf'
-include { demultiplex } from './modules/cutadapt.nf'
-include { fastqc } from './modules/fastqc.nf'
-include { multiqc } from './modules/multiqc.nf'
-include { STAR_INDEX; STAR_ALIGN } from './modules/STAR.nf'
-include { extract_UMI; dedup_UMI } from './modules/UMI.nf'
-include { BAM_INDEX } from './modules/samtools.nf'
-include { featureCounts } from './modules/subread.nf'
-include { group_results; plot_results } from './modules/visualization.nf'
+include { stats } from './modules/seqkit'
+include { demultiplex } from './modules/cutadapt'
+include { fastqc } from './modules/fastqc'
+include { multiqc } from './modules/multiqc'
+include { STAR_INDEX; STAR_ALIGN } from './modules/STAR'
+include { extract_UMI; dedup_UMI } from './modules/UMI'
+include { BAM_INDEX } from './modules/samtools'
+include { featureCounts } from './modules/subread'
+include { group_results; plot_results } from './modules/visualization'
 
 
 // VARIABLE DECLARATIONS
@@ -83,11 +83,11 @@ workflow {
     featureCounts_multiqc = featureCounts.out.logs.collect()
 
     // result visualization
-    featureCounts.out.counts | collect \
-    group_results
+    featureCounts.out.counts.collect() \
+    | group_results
 
-    featureCounts.out.counts | collect \
-    plot_results
+    featureCounts.out.counts.collect() \
+    | plot_results
 
     // qc report
     multiqc(

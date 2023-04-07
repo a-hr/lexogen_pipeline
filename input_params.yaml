@@ -4,30 +4,31 @@
 # You can also use full paths instead  
 
 # ---- required settings ----
-csv_dir: "${baseDir}/inputs" # folder containing the barcode .csv's and the .saf table 
-fastq_dir: "${baseDir}/inputs" # folder containing the fastq files
-output_dir: "${baseDir}/output" # folder to contain the outputs, created if not found
+csv_dir: "${baseDir}/inputs/csvs" # folder containing the barcode .csv's and the .saf table 
+fastq_dir: "${baseDir}/inputs/fastqs" # folder containing the fastq files
+output_dir: "${baseDir}/oct_22_rerun_output" # folder to contain the outputs, created if not found
 index_dir: "/scratch/blazquL/indexes/h_index/index_h99" # path where index is located OR where to create it
-suffix: "_R"
+suffix: "_"
 extension: ".fastq.gz"
 
 # ---- optional arguments ----
-get_bams: false
-create_index: true
-save_index: true
+get_bams: true
+create_index: false
+save_index: false
 ref_gen: "${baseDir}/ref_gen" # required only if create_index = true
 map_size: 100
 
 # ---- result plotting and grouping ----
 enable_grouping: true
-mouses: [WT, KI, YAC]
-tissues: [STR, CTX, HPC]
+mouses: [WT, KI, YAC, FIBRO]
+tissues: [STR, CTX, HPC, HD]
+group_control: [CTRL,]
 
 enable_plotting: true
 libraries: []
-samples: [WT, KI, YAC]
-targets: [hHTT_PA1_v1, hHTT_PA2_v1, hHTT_cPA1_v1, hHTT_cPA2_v1, GRN]
-controls: [NTC, Neg]
+samples: [WT, KI, YAC, FIBRO]
+targets: [hPAS12, hPAS16, hCPA1, hCPA2, GRN, B2M, STMN2_FL, STMN2_TR]
+controls: [CTRL, ]
 groups: 2
 
 # ---- notification (TODO) ----

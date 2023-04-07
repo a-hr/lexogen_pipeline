@@ -1,5 +1,5 @@
 process group_results {
-    publishDir "${params.output_dir}/counts", mode: 'copy'
+    publishDir "${params.output_dir}/", mode: 'copy'
 
     input:
         path result_tables
@@ -11,13 +11,14 @@ process group_results {
     script:
     def mouses = params.mouses.collect { "-m ${it}" }.join(" ")
     def tissues = params.tissues.collect { "-t ${it}" }.join(" ")
+    def ctrls = params.group_control.collect { "-c ${it}" }.join(" ")
     """
-    group_results.py ${result_tables} -o counts ${mouses} ${tissues}
+    group_results.py ${result_tables} -o counts ${mouses} ${tissues} ${ctrls}
     """
 }
 
 process plot_results {
-    publishDir "${params.output_dir}/plots", mode: 'copy'
+    publishDir "${params.output_dir}/", mode: 'copy'
 
     input:
         path result_tables

@@ -43,7 +43,8 @@ def validate_inputs(bc: str, fs: str, s: list) -> tuple:
         sys.stderr.write("InputError: No R1 .fastq file found\n")
         quit()
     
-    if not (f2 := Path(str(f1).replace(s[0], s[1]))).exists():
+    # replace the last occurence of the suffix to avoid replacing the suffix in the filename
+    if not (f2 := Path(s[1].join(str(f1).rsplit(s[0], 1)))).exists():
         sys.stderr.write("InputError: No R2 .fastq file found\n")
         quit()
 

@@ -40,8 +40,37 @@ else {
         .set { index_annot }
 }
 
+process input_logger {
+    publishDir "${params.output_dir}/input_logs", mode: 'copy'
+
+    input:
+        path lib_csv
+        path bc_csv
+        path saf
+        path input_params
+        path fastq_dir
+
+    output:
+        path "*.txt"
+        path "*.csv", includeInputs: true
+        path "*.yaml", includeInputs: true
+    
+    """
+    ls $fastq_dir > input_files.txt
+    """
+}
+
 
 workflow {
+    /* INPUT LOGGING */
+    input_logger(
+        Channel.fromPath("$params.csv_dir/fiveprime.csv"),
+        Channel.fromPath("$params.csv_dir/threeprime.csv"),
+        Channel.fromPath("$params.csv_dir/*.saf"),
+        Channel.fromPath("$baseDir/*.yaml"),
+        params.fastq_dir
+    )
+
     // star index creation
     STAR_INDEX(index_fa, index_annot)
 

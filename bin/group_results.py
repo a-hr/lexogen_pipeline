@@ -23,11 +23,11 @@ def _classify(sample: str, ref: dict) -> str:
             return r
 
 
-def _sort_columns(col_name: str, mouses: list, tissues: list):
+def _sort_columns(col_name: str, mouses: list, tissues: list, controls: list):
 
-    if not "_" in col_name:
-        # ctrl sample
-        total_weight = 999
+    for ctrl in controls:
+        if ctrl in col_name:
+            return 999
 
     else:
         # Assign a weight to each mouse type and tissue
@@ -43,14 +43,14 @@ def _sort_columns(col_name: str, mouses: list, tissues: list):
     return total_weight
 
 
-def group_csv(path: str, mouses: list, tissues: list) -> pd.DataFrame:
+def group_csv(path: str, mouses: list, tissues: list, controls: list) -> pd.DataFrame:
     """Read a csv and reorder the columns in alphabetical order."""
     df = pd.read_csv(path, index_col=0, sep="\t")
     info = df[["Chr", "Start", "End", "Length", "Strand"]]
     data = df.drop(["Chr", "Start", "End", "Length", "Strand"], axis=1)
 
     data = data.reindex(
-        sorted(data.columns, key=lambda col: _sort_columns(col, mouses, tissues)),
+        sorted(data.columns, key=lambda col: _sort_columns(col, mouses, tissues, controls)),
         axis=1,
     )
 
@@ -63,8 +63,9 @@ def group_csv(path: str, mouses: list, tissues: list) -> pd.DataFrame:
 @click.option("--sep", "-s", default="\t", help="Separator used in the output file.")
 @click.option("--mouse", "-m", multiple=True, help="Mouse types to group.")
 @click.option("--tissue", "-t", multiple=True, help="Tissue types to group.")
+@click.option("--control", "-c", multiple=True, help="Controls to group.")
 @click.argument("paths", nargs=-1)
-def main(output, sep, mouse, tissue, **paths):
+def main(output, sep, mouse, tissue, control, **paths):
     paths = paths["paths"]
     for path in paths:
         if not Path(path).exists():
@@ -78,9 +79,10 @@ def main(output, sep, mouse, tissue, **paths):
         print(f"Output dir {output} not found.")
         print("Creating the results directory...")
 
+    print("Grouping the files...")
     for path in paths:
         outname = Path(path).name
-        df = group_csv(path, mouse, tissue)
+        df = group_csv(path, mouse, tissue, control)
         df.to_csv(f"{rdir}/{outname}", sep=sep)
     print("Done.")
 

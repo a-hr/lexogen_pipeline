@@ -6,8 +6,8 @@
 # ---- required settings ----
 csv_dir: "${baseDir}/inputs/csvs" # folder containing the barcode .csv's and the .saf table 
 fastq_dir: "${baseDir}/inputs/fastqs" # folder containing the fastq files
-output_dir: "${baseDir}/oct_22_rerun_output" # folder to contain the outputs, created if not found
-index_dir: "/scratch/blazquL/indexes/h_index/index_h99" # path where index is located OR where to create it
+output_dir: "${baseDir}/mHTT_mousev1_output" # folder to contain the outputs, created if not found
+index_dir: "/scratch/blazquL/indexes/m_index/index_m99/" # path where index is located OR where to create it
 suffix: "_"
 extension: ".fastq.gz"
 
@@ -17,20 +17,17 @@ create_index: false
 save_index: false
 ref_gen: "${baseDir}/ref_gen" # required only if create_index = true
 map_size: 100
+sharedMemory: false
 
 # ---- result plotting and grouping ----
 enable_grouping: true
-mouses: [WT, KI, YAC, FIBRO]
-tissues: [STR, CTX, HPC, HD]
-group_control: [CTRL,]
+mouses: [WT, KI, YAC]
+tissues: [STR, CTX, HPC]
+group_control: [NTC,]
 
-enable_plotting: true
+enable_plotting: false
 libraries: []
 samples: [WT, KI, YAC, FIBRO]
-targets: [hPAS12, hPAS16, hCPA1, hCPA2, GRN, B2M, STMN2_FL, STMN2_TR]
-controls: [CTRL, ]
+targets: [mHTT. mCPA1, mCPA2, mGAPDH]
+controls: [NTC, ]
 groups: 2
-
-# ---- notification (TODO) ----
-maildir: ""
-mailpass: ""

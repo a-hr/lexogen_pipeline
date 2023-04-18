@@ -51,7 +51,7 @@ process STAR_ALIGN {
         --outFilterScoreMinOverLread 0.33 \\
         --outFilterMatchNminOverLread 0.33 \\
         --alignEndsType Local \\
-        --outSAMattributes Standard \\
+        --outSAMattributes NH HI AS nM NM MD \\
         ${params.sharedMemory ? '--genomeLoad LoadAndRemove' : ''} 
     """
 }

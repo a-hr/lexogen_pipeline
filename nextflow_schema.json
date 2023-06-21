@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/a-hr/lexogen/master/nextflow_schema.json",
+  "title": "a-hr/lexogen pipeline parameters",
+  "description": "A pipeline to demultiplex, map, deduplicate and count target RNA sequences",
+  "type": "object",
+  "definitions": {
+    "inputs": {
+      "title": "Inputs",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "csv_dir": {
+          "type": "string",
+          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/inputs/csvs",
+          "fa_icon": "far fa-folder",
+          "help_text": "Path to the directory where fiveprime.csv, three prime.csv and annotations.saf are located.\n",
+          "description": ".csv and .saf directory path"
+        },
+        "fastq_dir": {
+          "type": "string",
+          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/inputs/fastqs",
+          "description": ".fastq(.gz) files' directory path",
+          "help_text": "Path to the directory containing the FASTQ files (either gzipped or not) to be used.\n"
+        },
+        "index_dir": {
+          "type": "string",
+          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/index",
+          "description": "reference genome directory path",
+          "help_text": "Directory containing the reference STAR genome if already created. If not, the index created by the pipeline could be saved here."
+        },
+        "suffix": {
+          "type": "string",
+          "default": "_R",
+          "description": "pair-end pattern",
+          "help_text": "Common pattern to detect both pair-end files, without the 1 and 2. For example: file_R01; file_R02 --> suffix = _R0"
+        },
+        "extension": {
+          "type": "string",
+          "default": ".fastq.gz",
+          "description": "FASTQ file extension",
+          "help_text": "Either .fastq or .fq. + gzip compression .gz"
+        }
+      },
+      "required": ["csv_dir", "fastq_dir", "index_dir"]
+    },
+    "outputs": {
+      "title": "Outputs",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "output_dir": {
+          "type": "string",
+          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/output",
+          "description": "output directory path",
+          "help_text": "Path to the directory that will contain the output tables, BAMs, QC reports and logs."
+        },
+        "get_bams": {
+          "type": "boolean",
+          "description": "whether to output aligned BAMs or not",
+          "help_text": "Useful to visualize individual samples with IGV to explore the reads."
+        },
+        "save_index": {
+          "type": "boolean",
+          "description": "whether to save the generated index to the index_dir path"
+        }
+      },
+      "required": ["output_dir"]
+    },
+    "new_group_3": {
+      "title": "New Group 3",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "create_index": {
+          "type": "boolean",
+          "description": "whether to create the STAR index or not",
+          "help_text": "Not necessary to create one if an index is already available (link it with index_dir parameter)."
+        },
+        "ref_gen": {
+          "type": "string",
+          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/ref_gen",
+          "help_text": "A directory containing the reference FASTA and GTF annotations to create the STAR index.",
+          "description": "directory containing index creation files"
+        },
+        "map_size": {
+          "type": "integer",
+          "default": 100,
+          "description": "STAR parameter to create index"
+        },
+        "sharedMemory": {
+          "type": "boolean",
+          "description": "False when running on a cluster, True else.",
+          "help_text": "Enables the use of shared memory to optimize RAM usage of STAR by sharing the reference index across parallel processes. HPC clusters usually do not allow its use."
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/inputs"
+    },
+    {
+      "$ref": "#/definitions/outputs"
+    },
+    {
+      "$ref": "#/definitions/new_group_3"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 process BAM_INDEX {
     label 'process_low'
     tag "$bam"
-    publishDir "${params.output_dir}/bams", mode: 'move', enabled: params.get_bams
+    publishDir "${params.output_dir}/bams", mode: 'copy', enabled: params.get_bams
 
     input:
         path bam

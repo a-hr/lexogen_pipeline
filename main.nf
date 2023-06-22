@@ -2,7 +2,7 @@
 nextflow.enable.dsl=2
 
 include { stats } from './modules/seqkit'
-include { demultiplex } from './modules/cutadapt'
+include { demultiplex; trim_adapters } from './modules/cutadapt'
 include { fastqc } from './modules/fastqc'
 include { multiqc } from './modules/multiqc'
 include { STAR_INDEX; STAR_ALIGN } from './modules/STAR'
@@ -74,12 +74,17 @@ workflow {
     // star index creation
     STAR_INDEX(index_fa, index_annot)
 
-    // raw file qc
-    fastqc(paired_fastq_files)
-    fastqc_multiqc = fastqc.out.collect()
+    // TODO trim adapters
+    paired_fastq_files \
+    | trim_adapters \
+    | set { trimmed_fastq_files }
 
+    // raw file qc
+    fastqc(trimmed_fastq_files)
+    fastqc_multiqc = fastqc.out.collect()
+    
     // fastq demultiplexing
-    demultiplex(paired_fastq_files, csv_dir)
+    demultiplex(trimmed_fastq_files, csv_dir)
     demultiplex_multiqc = demultiplex.out.logs.collect()
     
     stats(

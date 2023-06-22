@@ -14,6 +14,7 @@
     - [Input files](#input-files)
     - [Usage for Nextflow/nf-core](#usage-for-nextflownf-core)
     - [Usage for EPI2ME](#usage-for-epi2me)
+  - [Pipeline output](#pipeline-output)
   - [Available arguments](#available-arguments)
     - [Inputs](#inputs)
     - [Outputs](#outputs)
@@ -158,6 +159,16 @@ The pipeline can be run on EPI2ME without any bioinformatics kwnoledge:
 2. Select the workflow and click on "Run workflow".
 3. Fill in the parameters on the interface. The available parameters are described in the [Available arguments](#available-arguments) section.
 4. Run the workflow.
+
+## Pipeline output
+
+The pipeline will generate the following:
+
+- a directory containing the expression tables both before and after deduplication.
+- a directory containing `seqkit stat` runs after every step of the pipeline.
+- a ``multiqc`` report of the pipeline processes.
+- a performance report of the pipeline processes.
+- optionally, a directory containing the final deduplicated BAM files, to be able to check the alignment on IGV.
 
 ## Available arguments
 

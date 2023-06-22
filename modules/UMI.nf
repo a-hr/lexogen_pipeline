@@ -7,9 +7,10 @@ process extract_UMI {
         path fastq
     output:
         path "UMI_$fastq"
-    
+    script:
+    def ns = "N" * params.umi_length
     """
-    umi_tools extract --bc-pattern=NNNNNN -I $fastq -S UMI_${fastq}
+    umi_tools extract --bc-pattern=$ns -I $fastq -S UMI_${fastq}
     """
 }
 

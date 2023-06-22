@@ -3,31 +3,23 @@
 # TIP: use $baseDir to refer to the directory where main.nf is located
 # You can also use full paths instead  
 
-# ---- required settings ----
-csv_dir: "${baseDir}/inputs/csvs" # folder containing the barcode .csv's and the .saf table 
-fastq_dir: "${baseDir}/inputs/fastqs" # folder containing the fastq files
-output_dir: "${baseDir}/mHTT_mousev1_output" # folder to contain the outputs, created if not found
-index_dir: "/scratch/blazquL/indexes/m_index/index_m99/" # path where index is located OR where to create it
-suffix: "_"
+# ---- input settings ----
+csv_dir: "${baseDir}/inputs/csvs"  # folder containing the barcode .csv's and the .saf table 
+fastq_dir: "${baseDir}/inputs/fastqs"
+index_dir: "${baseDir}/index"  # path where index is located OR where to create it
+suffix: "_R"
 extension: ".fastq.gz"
 
-# ---- optional arguments ----
-get_bams: true
-create_index: false
+# ---- output settings ----
+get_bams: false
 save_index: false
-ref_gen: "${baseDir}/ref_gen" # required only if create_index = true
+output_dir: "${baseDir}/output"  # folder to contain the outputs, created if not found
+
+# ---- UMI extraction settings ----
+umi_length: 6
+
+# ---- STAR settings ----
+create_index: false
+ref_gen: "${baseDir}/ref_gen"  # required only if create_index = true
 map_size: 100
 sharedMemory: false
-
-# ---- result plotting and grouping ----
-enable_grouping: true
-mouses: [WT, KI, YAC]
-tissues: [STR, CTX, HPC]
-group_control: [NTC,]
-
-enable_plotting: false
-libraries: []
-samples: [WT, KI, YAC, FIBRO]
-targets: [mHTT. mCPA1, mCPA2, mGAPDH]
-controls: [NTC, ]
-groups: 2

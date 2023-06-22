@@ -6,7 +6,7 @@ clean:
 	@rm -f .nextflow.log*
 	@rm -f *.mmd
 
-# singularity must be available in the working environment
+# singularity and golang must be available in the working environment
 pull:
 	echo "Pulling containers ..."
 	@mkdir -p containers

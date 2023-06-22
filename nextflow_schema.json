@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/a-hr/lexogen/master/nextflow_schema.json",
-  "title": "a-hr/lexogen pipeline parameters",
+  "$id": "https://raw.githubusercontent.com/a-hr/lexogen_pipeline/master/nextflow_schema.json",
+  "title": "a-hr/lexogen_pipeline",
   "description": "A pipeline to demultiplex, map, deduplicate and count target RNA sequences",
   "type": "object",
   "definitions": {
@@ -13,7 +13,7 @@
       "properties": {
         "csv_dir": {
           "type": "string",
-          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/inputs/csvs",
+          "default": "lexogen_pipeline/inputs/csvs",
           "fa_icon": "far fa-folder",
           "help_text": "Path to the directory where fiveprime.csv, three prime.csv and annotations.saf are located.\n",
           "description": ".csv and .saf directory path",
@@ -21,14 +21,14 @@
         },
         "fastq_dir": {
           "type": "string",
-          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/inputs/fastqs",
+          "default": "lexogen_pipeline/inputs/fastqs",
           "description": ".fastq(.gz) files' directory path",
           "help_text": "Path to the directory containing the FASTQ files (either gzipped or not) to be used.\n",
           "format": "directory-path"
         },
         "index_dir": {
           "type": "string",
-          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/index",
+          "default": "lexogen_pipeline/index",
           "description": "reference genome directory path",
           "help_text": "Directory containing the reference STAR genome if already created. If not, the index created by the pipeline could be saved here.",
           "format": "directory-path"
@@ -56,7 +56,7 @@
       "properties": {
         "output_dir": {
           "type": "string",
-          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/output",
+          "default": "lexogen_pipeline/output",
           "description": "output directory path",
           "help_text": "Path to the directory that will contain the output tables, BAMs, QC reports and logs.",
           "format": "directory-path"
@@ -73,8 +73,8 @@
         }
       }
     },
-    "new_group_1": {
-      "title": "New Group 1",
+    "umi_settings": {
+      "title": "UMI settings",
       "type": "object",
       "description": "",
       "default": "",
@@ -100,7 +100,7 @@
         },
         "ref_gen": {
           "type": "string",
-          "default": "/Users/varo/Desktop/biotools/lexogen_pipeline/ref_gen",
+          "default": "lexogen_pipeline/ref_gen",
           "help_text": "A directory containing the reference FASTA and GTF annotations to create the STAR index.",
           "description": "directory containing index creation files",
           "format": "directory-path"
@@ -126,7 +126,7 @@
       "$ref": "#/definitions/outputs"
     },
     {
-      "$ref": "#/definitions/new_group_1"
+      "$ref": "#/definitions/umi_settings"
     },
     {
       "$ref": "#/definitions/star_conf"

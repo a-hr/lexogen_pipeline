@@ -2,14 +2,13 @@
 nextflow.enable.dsl=2
 
 include { stats } from './modules/seqkit'
-include { demultiplex; trim_adapters } from './modules/cutadapt'
+include { demultiplex } from './modules/cutadapt'
 include { fastqc } from './modules/fastqc'
 include { multiqc } from './modules/multiqc'
 include { STAR_INDEX; STAR_ALIGN } from './modules/STAR'
 include { extract_UMI; dedup_UMI } from './modules/UMI'
 include { BAM_INDEX } from './modules/samtools'
 include { featureCounts } from './modules/subread'
-include { group_results; plot_results } from './modules/visualization'
 
 
 // VARIABLE DECLARATIONS
@@ -74,17 +73,12 @@ workflow {
     // star index creation
     STAR_INDEX(index_fa, index_annot)
 
-    // TODO trim adapters
-    paired_fastq_files \
-    | trim_adapters \
-    | set { trimmed_fastq_files }
-
     // raw file qc
-    fastqc(trimmed_fastq_files)
+    fastqc(paired_fastq_files)
     fastqc_multiqc = fastqc.out.collect()
     
     // fastq demultiplexing
-    demultiplex(trimmed_fastq_files, csv_dir)
+    demultiplex(paired_fastq_files, csv_dir)
     demultiplex_multiqc = demultiplex.out.logs.collect()
     
     stats(
@@ -115,13 +109,6 @@ workflow {
         csv_dir
     ) 
     featureCounts_multiqc = featureCounts.out.logs.collect()
-
-    // result visualization
-    featureCounts.out.counts.collect() \
-    | group_results
-
-    featureCounts.out.counts.collect() \
-    | plot_results
 
     // qc report
     multiqc(

@@ -14,19 +14,3 @@ process demultiplex {
     rm -f *R2.fastq.gz *unknown_R1.fastq.gz
     """
 }
-
-process trim_adapters {
-    label 'process_medium'
-    tag "$sample_id"
-
-    input:
-        tuple val(sample_id), path(fastqs)
-
-    output:
-        tuple val(sample_id), path("*.fastq.gz")
-    
-    // todo
-    """
-    cutadapt ...
-    """
-}

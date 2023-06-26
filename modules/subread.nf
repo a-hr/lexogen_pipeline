@@ -1,7 +1,7 @@
 
 process featureCounts {
     label 'process_low'
-    publishDir "${params.output_dir}",
+    publishDir "${params.out_dir}",
         mode: 'copy',
         pattern: "*.tsv"
 

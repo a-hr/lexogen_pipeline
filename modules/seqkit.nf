@@ -1,7 +1,7 @@
 process stats {
     tag "demultiplex_stats"
 
-    publishDir "${params.output_dir}/seqkit", mode: 'copy'
+    publishDir "${params.out_dir}/seqkit", mode: 'copy'
     
     input:
         path fastq_files

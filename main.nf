@@ -40,7 +40,7 @@ else {
 }
 
 process input_logger {
-    publishDir "${params.output_dir}/input_logs", mode: 'copy'
+    publishDir "${params.out_dir}/input_logs", mode: 'copy'
 
     input:
         path lib_csv

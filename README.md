@@ -8,7 +8,8 @@
   - [How to use the pipeline](#how-to-use-the-pipeline)
   - [Requirements](#requirements)
   - [Installation](#installation)
-    - [Installing the pipeline](#installing-the-pipeline)
+    - [Installing the pipeline (for command line use)](#installing-the-pipeline-for-command-line-use)
+    - [Installing the pipeline (for EPI2ME use)](#installing-the-pipeline-for-epi2me-use)
     - [Dependencies](#dependencies)
   - [Running the pipeline](#running-the-pipeline)
     - [Input files](#input-files)
@@ -16,10 +17,10 @@
     - [Usage for EPI2ME](#usage-for-epi2me)
   - [Pipeline output](#pipeline-output)
   - [Available arguments](#available-arguments)
-    - [Inputs](#inputs)
-    - [Outputs](#outputs)
-    - [UMI settings](#umi-settings)
-    - [STAR configuration](#star-configuration)
+    - [Input Options](#input-options)
+    - [Output Options](#output-options)
+    - [Sample Options](#sample-options)
+    - [Advanced Options](#advanced-options)
 
 ## Introduction
 
@@ -35,26 +36,27 @@ This pipeline is designed to process the sequencing results of targeted RNA expe
 
 ## How to use the pipeline
 
-The pipeline is written in Nextflow, a workflow manager that allows to run the pipeline in a wide variety of systems. It is configured to be run  either on a SLURM-managed HPC cluster or a local machine, though it can be run on a cloud instance or using other workload managers by editing the configuration file according to ![Nextflow documentation](https://www.nextflow.io/docs/latest/config.html#config-scopes).
+The pipeline is written in Nextflow, a workflow manager that allows to run the pipeline in a wide variety of systems. It is configured to be run either on a SLURM-managed HPC cluster or a local machine, though it can be run on a cloud instance or using other workload managers by editing the configuration file according to ![Nextflow documentation](https://www.nextflow.io/docs/latest/config.html#config-scopes).
 
 There are two main ways to run the pipeline:
 
-- Cloning the repository and running the pipeline manually through the command line using Nextflow or nf-core. (straightforward, but requires bioinformatics knowledge)
+- Cloning the repository and running the pipeline manually through the command line using Nextflow or nf-core. (straightforward, but requires bioinformatics knowledge).
 - Installing EPI2ME and running the pipeline through the EPI2ME interface. (user-friendly, but requires to install EPI2ME).
 
 ## Requirements
 
-In order to run, at least 32GB of RAM are required (human reference index is about 27GB). It can run on Windows, Mac or Linux. If using Windows, we recommend using the Windows Subsystem for Linux (WSL).
+In order to run, at least 32GB of RAM are required (human reference index is about 27GB). It can run on Windows, MacOS or Linux. If using Windows, we recommend installing the Windows Subsystem for Linux (WSL).
 
 ## Installation
 
 If using EPI2ME, [install it](https://labs.epi2me.io/installation/) on your system and follow the instructions on the [EPI2ME documentation](https://community.nanoporetech.com/protocols/epi2me-labs) to run the pipeline. To add it to your saved workflows simply copy this repository's URL and paste it on the "Add workflow" section of the EPI2ME interface.
+> WARNING: as of July 2023, there is a bug in Docker Desktop that might cause pipelines to fail. For this reason, as stated by the development team, it is recommended to [install docker manually](https://docs.docker.com/engine/install/ubuntu/) through the command line (just a couple of commands are needed to have it up and running).
 
 If using Nextflow/nf-core, clone the repository and install the dependencies. The easiest way to do so is using conda. The pipeline can be run on any system that supports Docker or Singularity. If using Windows, we recommend using the Windows Subsystem for Linux (WSL).
 
 The pipeline is especially tailored to be run on a HPC cluster, though it can seamlessly be run on a local machine and, with some configuration, on a cloud instance.
 
-### Installing the pipeline
+### Installing the pipeline (for command line use)
 
 The pipeline can be installed on any directory. Simply *cd* to the desired directory and clone the repository:
 
@@ -62,9 +64,19 @@ The pipeline can be installed on any directory. Simply *cd* to the desired direc
 git clone https://github.com/a-hr/lexogen_pipeline.git
 ```
 
+### Installing the pipeline (for EPI2ME use)
+
+1. Open EPI2ME and go to the "View Workflows" tab.
+2. On the top right corner, click on "Import workflow".
+3. Paste the repository's URL (https://github.com/a-hr/lexogen_pipeline) on the pop-up window and click on "Download".
+4. The workflow will be added to your saved workflows.
+
 ### Dependencies
 
-The pipeline requires Docker or Singularity (mainly for HOC clusters) to run. If you are using EPI2ME, the program will guide you through the dependencies installation. If you are using Nextflow/nf-core, you will need to install them manually.
+If you are using EPI2ME, the program will guide you through the dependencies installation.
+> WARNING: as of July 2023, there is a bug in Docker Desktop that might cause pipelines to fail. For this reason, as stated by the development team, it is recommended to [install docker manually](https://docs.docker.com/engine/install/ubuntu/) through the command line (just a couple of commands are needed to have it up and running).
+
+If you are using Nextflow/nf-core, you will need to install them manually. The pipeline requires [Docker](https://docs.docker.com/engine/install/ubuntu/) or [Singularity](https://github.com/sylabs/singularity/releases) (mainly for HPC clusters) to run.
 
 In order to install Nextflow, you can use the following command:
 
@@ -72,7 +84,7 @@ In order to install Nextflow, you can use the following command:
 conda create -n Nextflow -c bioconda nextflow
 ```
 
-Process specific dependencies are automatically downloaded as Docker or Singularity containers. The latter are cached locally (default location: `{pipeline_dir}/containers`), and can be manually installed using the provided Makefile:
+Process specific dependencies are automatically downloaded as Docker or Singularity containers. Docker images will be automatically pulled while running. On the other hand, Singularity images are cached locally (default location: `{pipeline_dir}/containers`), and can be manually installed using the provided Makefile:
 
 ```bash
 make pull
@@ -158,7 +170,12 @@ The pipeline can be run on EPI2ME without any bioinformatics kwnoledge:
 1. Open the EPI2ME interface and select "Add a new workflow". Add this custom workflow by pasting the repo link (https://github.com/a-hr/lexogen_pipeline.git).
 2. Select the workflow and click on "Run workflow".
 3. Fill in the parameters on the interface. The available parameters are described in the [Available arguments](#available-arguments) section.
-4. Run the workflow.
+4. Additionally, on the *Nextflow Configuration* tab, enter a specific profile:
+    - `local_docker` for running on a local machine with Docker.
+    - `local_singularity` for running on a local machine with Singularity.
+    - `cluster` for running on a SLURM cluster with Singularity.
+    - additional profiles can be added by creating a copy of any of the files in `./confs` and modifying it. Do no forget to add the new profile name and link its `.conf` in the `nextflow.config` file.
+5. Run the workflow.
 
 ## Pipeline output
 
@@ -174,7 +191,7 @@ The pipeline will generate the following:
 
 Arguments can be passed to the pipeline through the input_params.yaml file.
 
-### Inputs
+### Input Options
 
 | Parameter | Description | Type | Default | Required |
 |-----------|-----------|-----------|-----------|-----------|
@@ -184,7 +201,7 @@ Arguments can be passed to the pipeline through the input_params.yaml file.
 | `suffix` | pair-end pattern <details><summary>Help</summary><small>Common pattern to detect both pair-end files, without the 1 and 2. For example: file_R01; file_R02 --> suffix = _R0</small></details>| `string` | _R |  |
 | `extension` | FASTQ file extension <details><summary>Help</summary><small>Either .fastq or .fq. + gzip compression .gz</small></details>| `string` | .fastq.gz |  |
 
-### Outputs
+### Output Options
 
 | Parameter | Description | Type | Default | Required |
 |-----------|-----------|-----------|-----------|-----------|
@@ -192,13 +209,13 @@ Arguments can be passed to the pipeline through the input_params.yaml file.
 | `get_bams` | whether to output aligned BAMs or not <details><summary>Help</summary><small>Useful to visualize individual samples with IGV to explore the reads.</small></details>| `boolean` | True |  |
 | `save_index` | whether to save the generated index to the index_dir path | `boolean` |  |  |
 
-### UMI settings
+### Sample Options
 
 | Parameter | Description | Type | Default | Required |
 |-----------|-----------|-----------|-----------|-----------|
 | `umi_length` | length of the UMI olives | `integer` | 6 | True |
 
-### STAR configuration
+### Advanced Options
 
 | Parameter | Description | Type | Default | Required |
 |-----------|-----------|-----------|-----------|-----------|

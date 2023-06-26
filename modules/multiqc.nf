@@ -1,6 +1,7 @@
 process multiqc {
     label 'process_low'
     publishDir "${params.output_dir}", mode: 'copy'
+    containerOptions '--user $(id -u):$(id -g) --group-add 100'
 
     input:
         path fastqc_logs

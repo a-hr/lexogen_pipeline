@@ -1,12 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "https://raw.githubusercontent.com/a-hr/lexogen_pipeline/master/nextflow_schema.json",
-  "title": "a-hr/lexogen_pipeline",
-  "description": "A pipeline to demultiplex, map, deduplicate and count target RNA sequences",
+  "title": "a-hr/lexogen_pipeline pipeline parameters",
+  "description": "A pipeline to demultiplex, align, deduplicate and count transcripts on targeted RNA sequencing data.",
   "type": "object",
   "definitions": {
-    "inputs": {
-      "title": "Inputs",
+    "input_options": {
+      "title": "Input Options",
       "type": "object",
       "description": "",
       "default": "",
@@ -48,13 +48,27 @@
       },
       "required": ["csv_dir", "fastq_dir", "index_dir"]
     },
-    "outputs": {
-      "title": "Outputs",
+    "sample_options": {
+      "title": "Sample Options",
       "type": "object",
       "description": "",
       "default": "",
       "properties": {
-        "output_dir": {
+        "umi_length": {
+          "type": "integer",
+          "default": 6,
+          "description": "length of the UMI olives"
+        }
+      },
+      "required": ["umi_length"]
+    },
+    "output_options": {
+      "title": "Output Options",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "out_dir": {
           "type": "string",
           "default": "lexogen_pipeline/output",
           "description": "output directory path",
@@ -73,22 +87,8 @@
         }
       }
     },
-    "umi_settings": {
-      "title": "UMI settings",
-      "type": "object",
-      "description": "",
-      "default": "",
-      "properties": {
-        "umi_length": {
-          "type": "integer",
-          "default": 6,
-          "description": "length of the UMI olives"
-        }
-      },
-      "required": ["umi_length"]
-    },
-    "star_conf": {
-      "title": "STAR configuration",
+    "advanced_options": {
+      "title": "Advanced Options",
       "type": "object",
       "description": "",
       "default": "",
@@ -120,16 +120,16 @@
   },
   "allOf": [
     {
-      "$ref": "#/definitions/inputs"
+      "$ref": "#/definitions/input_options"
     },
     {
-      "$ref": "#/definitions/outputs"
+      "$ref": "#/definitions/sample_options"
     },
     {
-      "$ref": "#/definitions/umi_settings"
+      "$ref": "#/definitions/output_options"
     },
     {
-      "$ref": "#/definitions/star_conf"
+      "$ref": "#/definitions/advanced_options"
     }
   ]
 }

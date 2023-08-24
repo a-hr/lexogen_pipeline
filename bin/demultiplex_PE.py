@@ -34,6 +34,7 @@ def validate_inputs(bc: str, fs: str, s: list) -> tuple:
 
     bc_df = pd.read_csv(bc_path, sep=";").dropna(axis=0, inplace=False)
     bc_df.Sample.replace(" ", "_", inplace=True, regex=True)
+    bc_df.Sample.replace("/", "-", inplace=True, regex=True)
 
     exp_df = pd.read_csv(exp_path, sep=";").dropna(axis=0, inplace=False)
 
@@ -57,9 +58,10 @@ def demultiplex(bc_csv: Path, exp_csv: Path, f1: Path, f2: Path, suffix: list) -
     ]
     bcs = " -g ".join(bcs)  # contains the barcodes and their id, concatenated with -g
 
-    exp = exp_csv.loc[exp_csv["File"] == f1.stem.split(".")[0].removesuffix(suffix[0])].iloc[0, 1]
+    sample_id = f1.stem.split(".")[0].removesuffix(suffix[0]).removeprefix("trim_")
+    exp = exp_csv.loc[exp_csv["File"] == sample_id].iloc[0, 1]
     
-    cmd = f"""cutadapt -e 0 --no-indels -j 0 -g {bcs} -p {exp}_{{name}}_R1.fastq.gz -o {exp}_{{name}}_R2.fastq.gz {f2} {f1}"""
+    cmd = f"""cutadapt -e 0 --no-indels -j 0 -m 25 -g {bcs} --json={exp}_bc.cutadapt.json -p {exp}_{{name}}_R1.fastq.gz -o {exp}_{{name}}_R2.fastq.gz {f2} {f1}"""
     os.system(cmd)
 
 

@@ -2,8 +2,8 @@
 nextflow.enable.dsl=2
 
 include { stats } from './modules/seqkit'
-include { demultiplex } from './modules/cutadapt'
-include { fastqc } from './modules/fastqc'
+include { demultiplex; adapter_trimming } from './modules/cutadapt'
+include { fastqc as raw_fastqc; fastqc as trim_fastqc } from './modules/fastqc'
 include { multiqc } from './modules/multiqc'
 include { STAR_INDEX; STAR_ALIGN } from './modules/STAR'
 include { extract_UMI; dedup_UMI } from './modules/UMI'
@@ -21,6 +21,10 @@ Channel
 Channel
     .value(params.index_dir)
     .set { index_dir }
+
+//  https://knowledge.illumina.com/library-preparation/general/library-preparation-general-reference_material-list/000001314
+fw_adapter = "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA"
+rv_adapter = "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
 
 if (params.create_index) {
     Channel
@@ -59,7 +63,6 @@ process input_logger {
     """
 }
 
-
 workflow {
     /* INPUT LOGGING */
     input_logger(
@@ -74,11 +77,17 @@ workflow {
     STAR_INDEX(index_fa, index_annot)
 
     // raw file qc
-    fastqc(paired_fastq_files)
-    fastqc_multiqc = fastqc.out.collect()
+    raw_fastqc(paired_fastq_files)
+    raw_fastqc_multiqc = raw_fastqc.out.collect()
+
+    // adapter trimming
+    adapter_trimming(paired_fastq_files, fw_adapter, rv_adapter)
+
+    trim_fastqc(adapter_trimming.out.fastqs)
+    trim_fastqc_multiqc = trim_fastqc.out.collect()
     
     // fastq demultiplexing
-    demultiplex(paired_fastq_files, csv_dir)
+    demultiplex(adapter_trimming.out.fastqs, csv_dir)
     demultiplex_multiqc = demultiplex.out.logs.collect()
     
     stats(
@@ -112,7 +121,8 @@ workflow {
 
     // qc report
     multiqc(
-        fastqc_multiqc,
+        raw_fastqc_multiqc,
+        trim_fastqc_multiqc,
         demultiplex_multiqc,
         alignment_multiqc,
         dedup_multiqc,

@@ -1,7 +1,7 @@
 process multiqc {
     label 'process_low'
     publishDir "${params.out_dir}", mode: 'copy'
-    containerOptions ${workflow.containerEngine == "docker" ? '--user $(id -u):$(id -g) --group-add 100' : ''}
+    containerOptions "${workflow.containerEngine == "docker" ? '--user $(id -u):$(id -g) --group-add 100' : ''}"
 
     input:
         path fastqc_logs

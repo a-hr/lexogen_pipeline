@@ -36,7 +36,7 @@ This pipeline is designed to process the sequencing results of targeted RNA expe
 
 ## How to use the pipeline
 
-The pipeline is written in Nextflow, a workflow manager that allows to run the pipeline in a wide variety of systems. It is configured to be run either on a SLURM-managed HPC cluster or a local machine, though it can be run on a cloud instance or using other workload managers by editing the configuration file according to ![Nextflow documentation](https://www.nextflow.io/docs/latest/config.html#config-scopes).
+The pipeline is written in Nextflow, a workflow manager that allows to run the pipeline in a wide variety of systems. It is configured to be run either on a SLURM-managed HPC cluster or a local machine, though it can be run on a cloud instance or using other workload managers by editing the configuration file according to [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html#config-scopes).
 
 There are two main ways to run the pipeline:
 

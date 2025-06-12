@@ -94,7 +94,7 @@ make pull
 
 ### Input files
 
-- FASTQ files: Illumina pair-end FASTQ files (either gzipped or not).
+- FASTQ files: Illumina pair-end FASTQ files (either gzipped or not). Must have the same names as the fiveprime prefixes (delete everything not in the prefix). 
 - fiveprime.csv: maps file names (without pair-end suffix "_R" and without extensions) to sample groups, if a single file pair is present, add it as well. This will rename files to classify samples for the output table (e.g. mHTT_WT-1a).
     > fiveprime.csv
 
